@@ -16,7 +16,7 @@ import com.example.myapplication.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class EditShopItemActivity : AppCompatActivity() {
+class EditShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishListener {
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
 
@@ -34,6 +34,10 @@ class EditShopItemActivity : AppCompatActivity() {
             launchRightMode()
 
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 
     private fun parseIntent() {

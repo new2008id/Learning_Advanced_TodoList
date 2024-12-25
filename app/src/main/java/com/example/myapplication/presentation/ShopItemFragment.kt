@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,12 +25,21 @@ class ShopItemFragment : Fragment() {
     private lateinit var saveButton: Button
 
     private lateinit var viewModel: EditShopItemViewModel
+    private lateinit var onEditingFinishListener: OnEditingFinishListener
 
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishListener) {
+            onEditingFinishListener = context
+        } else {
+            throw RuntimeException("Activity must implement OnEditingFinishListener")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("ShopItemFragment", "onCreate")
         super.onCreate(savedInstanceState)
         parseParams()
     }
@@ -143,9 +153,14 @@ class ShopItemFragment : Fragment() {
             tilName.error = message
         }
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed() // этот метод тоже самое, что кнопка назад на Android-устройстве
+            onEditingFinishListener.onEditingFinished() // этот метод тоже самое, что кнопка назад на Android-устройстве
         }
     }
+
+    interface OnEditingFinishListener {
+        fun onEditingFinished()
+    }
+
 
     companion object {
         private const val SCREEN_MODE = "extra_mode"
